@@ -53,7 +53,7 @@ public class UserController {
             response.put("id", teacher.getId());
             response.put("idName", teacher.getIdName());
             response.put("email", teacher.getEmail());
-            response.put("role", Role.TEACHER);
+            response.put("role", teacher.getRole());
             response.put("bio", teacher.getBio());
             response.put("avatarUrl", teacher.getAvatarUrl());
             response.put("isActive", teacher.getIsActive());

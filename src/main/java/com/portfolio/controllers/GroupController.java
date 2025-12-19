@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/groups")
@@ -70,5 +71,20 @@ public class GroupController {
     public ResponseEntity<String> regenerateGroupCode(@PathVariable Long id) {
         String newCode = groupService.regenerateGroupCode(id);
         return ResponseEntity.ok(newCode);
+    }
+
+    @PutMapping("/{id}/teacher")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<GroupResponseDTO> assignTeacherToGroup(
+            @PathVariable Long id,
+            @RequestBody Map<String, Long> request) {
+        Long teacherId = request.get("teacherId");
+        return ResponseEntity.ok(groupService.assignTeacherToGroup(id, teacherId));
+    }
+
+    @DeleteMapping("/{id}/teacher")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<GroupResponseDTO> removeTeacherFromGroup(@PathVariable Long id) {
+        return ResponseEntity.ok(groupService.removeTeacherFromGroup(id));
     }
 }

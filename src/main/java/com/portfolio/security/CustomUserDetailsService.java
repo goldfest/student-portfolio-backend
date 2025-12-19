@@ -21,26 +21,36 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        // Сначала ищем студента
-        Student student = studentRepository.findByEmail(email)
+        // 1. СНАЧАЛА ищем преподавателя (включая администраторов)
+        Teacher teacher = teacherRepository.findByEmail(email)
                 .orElse(null);
 
-        if (student != null) {
-            return createUserDetails(student.getEmail(), student.getPasswordHash(), student.getRole().name());
+        if (teacher != null) {
+            // Важно: роль должна быть с префиксом "ROLE_"
+            return createUserDetails(
+                    teacher.getEmail(),
+                    teacher.getPasswordHash(),
+                    "ROLE_" + teacher.getRole().name() // Вернет "ROLE_ADMIN" или "ROLE_TEACHER"
+            );
         }
 
-        // Если студент не найден, ищем преподавателя
-        Teacher teacher = teacherRepository.findByEmail(email)
+        // 2. Если преподаватель не найден, ищем студента
+        Student student = studentRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-        return createUserDetails(teacher.getEmail(), teacher.getPasswordHash(), teacher.getRole().name());
+        return createUserDetails(
+                student.getEmail(),
+                student.getPasswordHash(),
+                "ROLE_" + student.getRole().name() // Вернет "ROLE_STUDENT"
+        );
     }
 
-    private UserDetails createUserDetails(String email, String password, String role) {
+    private UserDetails createUserDetails(String email, String password, String authority) {
+        // Используем переданный authority с уже готовым префиксом
         return new org.springframework.security.core.userdetails.User(
                 email,
                 password,
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role))
+                Collections.singletonList(new SimpleGrantedAuthority(authority))
         );
     }
 }

@@ -26,13 +26,11 @@ public class StudentController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') or (hasRole('STUDENT') and #id == authentication.principal.id)")
     public ResponseEntity<StudentResponseDTO> getStudentById(@PathVariable Long id) {
         return ResponseEntity.ok(studentService.getStudentById(id));
     }
 
     @GetMapping("/email/{email}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<StudentResponseDTO> getStudentByEmail(@PathVariable String email) {
         return ResponseEntity.ok(studentService.getStudentByEmail(email));
     }
@@ -57,5 +55,10 @@ public class StudentController {
     public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/teacher/{teacherId}")
+    public ResponseEntity<List<StudentResponseDTO>> getStudentsByTeacherId(@PathVariable Long teacherId) {
+        return ResponseEntity.ok(studentService.getStudentsByTeacherId(teacherId));
     }
 }

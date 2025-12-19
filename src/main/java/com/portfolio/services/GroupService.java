@@ -71,10 +71,13 @@ public class GroupService {
 
         group.setName(groupDetails.getName());
 
+        // ВАЖНО: Проверьте как работает этот код
         if (groupDetails.getTeacher() != null && groupDetails.getTeacher().getId() != null) {
             Teacher teacher = teacherRepository.findById(groupDetails.getTeacher().getId())
                     .orElseThrow(() -> new EntityNotFoundException("Teacher not found"));
             group.setTeacher(teacher);
+        } else {
+            group.setTeacher(null); // Удаляем преподавателя если teacher = null
         }
 
         Group updated = groupRepository.save(group);
@@ -119,5 +122,30 @@ public class GroupService {
 
     private String generateGroupCode() {
         return "GRP-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+    }
+
+    @Transactional
+    public GroupResponseDTO assignTeacherToGroup(Long groupId, Long teacherId) {
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found with id: " + groupId));
+
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() -> new EntityNotFoundException("Teacher not found with id: " + teacherId));
+
+        group.setTeacher(teacher);
+        group = groupRepository.save(group);
+
+        // ВАЖНО: После сохранения нужно правильно сконвертировать в DTO
+        return convertToDTO(group);
+    }
+
+    public GroupResponseDTO removeTeacherFromGroup(Long groupId) {
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found with id: " + groupId));
+
+        group.setTeacher(null);
+        group = groupRepository.save(group);
+
+        return convertToDTO(group);
     }
 }

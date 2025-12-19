@@ -139,4 +139,20 @@ public class StudentService {
             entity.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         }
     }
+
+    @Transactional(readOnly = true)
+    public List<StudentResponseDTO> getStudentsByTeacherId(Long teacherId) {
+        // Получаем все группы преподавателя
+        List<Group> groups = groupRepository.findByTeacherId(teacherId);
+
+        // Собираем студентов из всех групп
+        List<Student> students = groups.stream()
+                .flatMap(group -> group.getStudents().stream())
+                .distinct()
+                .collect(Collectors.toList());
+
+        return students.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
 }

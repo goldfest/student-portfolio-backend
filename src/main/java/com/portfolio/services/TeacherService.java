@@ -2,8 +2,11 @@ package com.portfolio.services;
 
 import com.portfolio.dto.TeacherDTO;
 import com.portfolio.dto.TeacherResponseDTO;
+import com.portfolio.models.Group;
 import com.portfolio.models.Role;
 import com.portfolio.models.Teacher;
+import com.portfolio.repositories.GroupRepository;
+import com.portfolio.repositories.StudentRepository;
 import com.portfolio.repositories.TeacherRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,7 @@ public class TeacherService {
 
     private final TeacherRepository teacherRepository;
     private final PasswordEncoder passwordEncoder;
+    private final GroupRepository groupRepository;
 
     public List<TeacherResponseDTO> getAllTeachers() {
         List<Teacher> teachers = teacherRepository.findAll();
@@ -68,7 +72,20 @@ public class TeacherService {
             throw new IllegalArgumentException("Email already exists");
         }
 
-        updateEntityFromDTO(teacher, teacherDTO);
+        teacher.setIdName(teacherDTO.getIdName());
+        teacher.setEmail(teacherDTO.getEmail());
+        teacher.setBio(teacherDTO.getBio());
+        teacher.setAvatarUrl(teacherDTO.getAvatarUrl());
+        teacher.setIsActive(teacherDTO.getIsActive());
+
+        if (teacherDTO.getRole() != null) {
+            teacher.setRole(teacherDTO.getRole());
+        }
+
+        // Обновляем пароль только если он указан и не пустой
+        if (teacherDTO.getPassword() != null && !teacherDTO.getPassword().isEmpty()) {
+            teacher.setPasswordHash(passwordEncoder.encode(teacherDTO.getPassword()));
+        }
 
         Teacher updated = teacherRepository.save(teacher);
         return convertToDTO(updated);
@@ -76,10 +93,16 @@ public class TeacherService {
 
     @Transactional
     public void deleteTeacher(Long id) {
-        if (!teacherRepository.existsById(id)) {
-            throw new EntityNotFoundException("Teacher not found with id: " + id);
+        Teacher teacher = teacherRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Teacher not found with id: " + id));
+
+        // Проверяем, есть ли связанные группы
+        List<Group> teacherGroups = groupRepository.findByTeacherId(id);
+        if (!teacherGroups.isEmpty()) {
+            throw new IllegalStateException("Cannot delete teacher with assigned groups. Remove teacher from groups first.");
         }
-        teacherRepository.deleteById(id);
+
+        teacherRepository.delete(teacher);
     }
 
     private TeacherResponseDTO convertToDTO(Teacher teacher) {
