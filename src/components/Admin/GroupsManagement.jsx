@@ -287,25 +287,13 @@ const GroupsManagement = () => {
                 {errors.name?.message}
               </Form.Control.Feedback>
             </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Преподаватель *</Form.Label>
-              <Form.Select
+            {editingGroup && (
+              <input
+                type="hidden"
                 {...register('teacherId')}
-                isInvalid={!!errors.teacherId}
-              >
-                <option value="">Выберите преподавателя...</option>
-                {teachers.map(teacher => (
-                  <option key={teacher.id} value={teacher.id}>
-                    {teacher.idName} ({teacher.email})
-                  </option>
-                ))}
-              </Form.Select>
-              <Form.Control.Feedback type="invalid">
-                {errors.teacherId?.message}
-              </Form.Control.Feedback>
-            </Form.Group>
-
+                value={editingGroup.teacher?.id || ''}
+              />
+            )}
             {editingGroup && (
               <Form.Group className="mb-3">
                 <Form.Label>Код группы</Form.Label>

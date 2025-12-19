@@ -276,14 +276,14 @@ const Portfolio = () => {
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Тип работы *</Form.Label>
-                  <Form.Select name="workTypeId" required>
+                  <Form.Select
+                    name="workTypeId"
+                    value={editingItem?.workType?.id || ''}
+                    required
+                  >
                     <option value="">Выберите тип...</option>
                     {workTypes.map(type => (
-                      <option
-                        key={type.id}
-                        value={type.id}
-                        selected={editingItem?.workType?.id === type.id}
-                      >
+                      <option key={type.id} value={type.id}>
                         {type.name}
                       </option>
                     ))}

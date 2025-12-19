@@ -19,7 +19,7 @@ import StudentDashboard from './components/Student/Dashboard';
 import StudentPortfolio from './components/Student/Portfolio';
 import AddWork from './components/Student/AddWork';
 import EditProfile from './components/Student/EditProfile';
-import ProfilePage from './components/Student/Profile';
+
 
 // Common components
 import Home from './components/Common/Home';
@@ -96,11 +96,7 @@ const AppRoutes = () => {
       } />
       
       {/* Student routes */}
-      <Route path="/profile" element={
-        <PrivateRoute>
-          <Layout><ProfilePage /></Layout>
-        </PrivateRoute>
-      } />
+
       <Route path="/student/dashboard" element={
         <PrivateRoute roles={['STUDENT']}>
           <Layout><StudentDashboard /></Layout>

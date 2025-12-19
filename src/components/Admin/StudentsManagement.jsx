@@ -24,6 +24,7 @@ const studentSchema = yup.object({
   bio: yup.string(),
   avatarUrl: yup.string().url('Неверный URL'),
   isActive: yup.boolean().default(true),
+  groupId: yup.number().nullable(), // или .required(), если группа обязательна
 });
 
 const StudentsManagement = () => {
@@ -78,6 +79,7 @@ const StudentsManagement = () => {
       bio: student.bio || '',
       avatarUrl: student.avatarUrl || '',
       isActive: student.isActive,
+      groupId: student.group?.id || '',
     });
     setShowModal(true);
   };
@@ -96,15 +98,28 @@ const StudentsManagement = () => {
   const onSubmit = async (data) => {
     try {
       setError('');
+
       if (editingStudent) {
         await studentService.update(editingStudent.id, data);
       } else {
         await studentService.create(data);
       }
+
       setShowModal(false);
       await loadData();
     } catch (err) {
-      setError(err.response?.data || 'Ошибка сохранения');
+      // Обрабатываем ошибку как строку, а не объект
+      let errorMessage = 'Ошибка сохранения';
+      if (err.response?.data) {
+        const errorData = err.response.data;
+        if (typeof errorData === 'object' && errorData !== null) {
+          // Например: { password: "must not be blank" } → объединяем в строку
+          errorMessage = Object.values(errorData).join(' ');
+        } else {
+          errorMessage = String(errorData);
+        }
+      }
+      setError(errorMessage);
     }
   };
 
@@ -258,6 +273,17 @@ const StudentsManagement = () => {
                 label="Активный"
                 {...register('isActive')}
               />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Группа</Form.Label>
+              <Form.Select {...register('groupId')}>
+                <option value="">Не назначено</option>
+                {groups.map(group => (
+                  <option key={group.id} value={group.id}>
+                    {group.name}
+                  </option>
+                ))}
+              </Form.Select>
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>

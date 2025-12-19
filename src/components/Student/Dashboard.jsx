@@ -332,14 +332,6 @@ const StudentDashboard = () => {
                 >
                   Редактировать профиль
                 </Button>
-                <Button 
-                  as={Link} 
-                  to={`/portfolio/${user?.idName}`} 
-                  variant="outline-success" 
-                  className="w-100"
-                >
-                  Публичное портфолио
-                </Button>
               </div>
             </Card.Body>
           </Card>
