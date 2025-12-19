@@ -14,4 +14,6 @@ export const studentService = {
   delete: (id) => api.delete(`/students/${id}`),
   
   updateProfile: (id, data) => api.put(`/students/${id}`, data).then(res => res.data),
+
+  getByTeacherId: (id) => api.get(`/students/teacher/${id}`).then(res => res.data),
 };

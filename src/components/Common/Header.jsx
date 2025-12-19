@@ -40,12 +40,7 @@ const Header = () => {
                 {/* Преподаватель видит только некоторые разделы */}
                 {isTeacher() && !isAdmin() && (
                   <>
-                    <Nav.Link as={Link} to="/admin">Панель преподавателя</Nav.Link>
-                    <Nav.Link as={Link} to="/admin/students">Мои студенты</Nav.Link>
                     <Nav.Link as={Link} to="/admin/portfolio">Проверка работ</Nav.Link>
-                    <Nav.Link as={Link} to="/admin/groups">Мои группы</Nav.Link>
-                    <Nav.Link as={Link} to="/admin/work-types">Типы работ</Nav.Link>
-                    <Nav.Link as={Link} to="/admin/skills">Навыки</Nav.Link>
                   </>
                 )}
                 
@@ -54,7 +49,6 @@ const Header = () => {
                   <>
                     <Nav.Link as={Link} to="/student/dashboard">Мое портфолио</Nav.Link>
                     <Nav.Link as={Link} to="/student/add-work">Добавить работу</Nav.Link>
-                    <Nav.Link as={Link} to={`/portfolio/${user?.idName}`}>Публичное view</Nav.Link>
                   </>
                 )}
               </>

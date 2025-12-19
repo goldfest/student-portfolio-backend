@@ -9,7 +9,7 @@ import Register from './components/Common/Register';
 import AdminDashboard from './components/Admin/Dashboard';
 import StudentsManagement from './components/Admin/StudentsManagement';
 import TeacherManagement from './components/Admin/TeacherManagement';
-//import WorkTypesManagement from './components/Admin/WorkTypesManagement';
+import WorkTypesManagement from './components/Admin/WorkTypesManagement';
 import SkillsManagement from './components/Admin/SkillsManagement';
 import GroupsManagement from './components/Admin/GroupsManagement';
 import PortfolioReview from './components/Admin/PortfolioReview';
@@ -19,7 +19,7 @@ import StudentDashboard from './components/Student/Dashboard';
 import StudentPortfolio from './components/Student/Portfolio';
 import AddWork from './components/Student/AddWork';
 import EditProfile from './components/Student/EditProfile';
-//import PublicPortfolioView from './components/Public/PortfolioView';
+import ProfilePage from './components/Student/Profile';
 
 // Common components
 import Home from './components/Common/Home';
@@ -44,7 +44,6 @@ const AppRoutes = () => {
       {/* Public routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-    {/* <Route path="/portfolio/:studentId" element={<PublicPortfolioView />} /> */}
       
       {/* Protected routes with layout */}
       <Route path="/" element={
@@ -71,13 +70,13 @@ const AppRoutes = () => {
           <Layout><TeacherManagement /></Layout>
         </PrivateRoute>
       } />
-      {/* 
+      
       <Route path="/admin/work-types" element={
         <PrivateRoute roles={['ADMIN', 'TEACHER']}>
           <Layout><WorkTypesManagement /></Layout>
         </PrivateRoute>
       } />
-      */}
+      
       <Route path="/admin/skills" element={
         <PrivateRoute roles={['ADMIN', 'TEACHER']}>
           <Layout><SkillsManagement /></Layout>
@@ -97,6 +96,11 @@ const AppRoutes = () => {
       } />
       
       {/* Student routes */}
+      <Route path="/profile" element={
+        <PrivateRoute>
+          <Layout><ProfilePage /></Layout>
+        </PrivateRoute>
+      } />
       <Route path="/student/dashboard" element={
         <PrivateRoute roles={['STUDENT']}>
           <Layout><StudentDashboard /></Layout>
@@ -120,6 +124,7 @@ const AppRoutes = () => {
           <Layout><EditProfile /></Layout>
         </PrivateRoute>
       } />
+
       
       {/* Catch all */}
       <Route path="*" element={<Navigate to="/" />} />

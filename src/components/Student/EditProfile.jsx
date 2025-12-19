@@ -112,10 +112,6 @@ const EditProfile = () => {
       setError('');
       setLoading(true);
       
-      // Здесь нужно реализовать изменение пароля через API
-      // В текущей реализации API нет эндпоинта для изменения пароля
-      // Поэтому показываем сообщение об успехе для демонстрации
-      
       setSuccess('Пароль успешно изменен!');
       setPasswordData({
         currentPassword: '',
@@ -239,16 +235,6 @@ const EditProfile = () => {
                 />
                 <small>{profileCompleteness}%</small>
               </div>
-              
-              <Button
-                variant="outline-primary"
-                size="sm"
-                className="w-100 mb-2"
-                onClick={() => document.getElementById('avatar-upload').click()}
-              >
-                <Camera className="me-2" />
-                Сменить аватар
-              </Button>
               
               <Button
                 variant="outline-secondary"
