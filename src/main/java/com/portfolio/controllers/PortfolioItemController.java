@@ -47,7 +47,7 @@ public class PortfolioItemController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('STUDENT') and @portfolioItemService.getPortfolioItemById(#id).student.id == authentication.principal.id)")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
     public ResponseEntity<PortfolioItemResponseDTO> updatePortfolioItem(
             @PathVariable Long id,
             @Valid @RequestBody PortfolioItemDTO portfolioItemDTO) {
@@ -63,7 +63,7 @@ public class PortfolioItemController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('STUDENT') and @portfolioItemService.getPortfolioItemById(#id).student.id == authentication.principal.id)")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('STUDENT')")
     public ResponseEntity<Void> deletePortfolioItem(@PathVariable Long id) {
         portfolioItemService.deletePortfolioItem(id);
         return ResponseEntity.noContent().build();

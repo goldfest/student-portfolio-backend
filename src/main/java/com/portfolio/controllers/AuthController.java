@@ -2,6 +2,7 @@ package com.portfolio.controllers;
 
 import com.portfolio.dto.AuthRequest;
 import com.portfolio.dto.AuthResponse;
+import com.portfolio.models.Role;
 import com.portfolio.models.Student;
 import com.portfolio.models.Teacher;
 import com.portfolio.models.User;
@@ -77,6 +78,7 @@ public class AuthController {
             student.setBio(studentDTO.getBio());
             student.setAvatarUrl(studentDTO.getAvatarUrl());
             student.setIsActive(studentDTO.getIsActive());
+            student.setRole(Role.STUDENT);
 
             Student savedStudent = studentRepository.save(student);
 

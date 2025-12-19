@@ -2,6 +2,7 @@ package com.portfolio.services;
 
 import com.portfolio.dto.StudentDTO;
 import com.portfolio.dto.StudentResponseDTO;
+import com.portfolio.dto.StudentUpdateDTO;
 import com.portfolio.models.Group;
 import com.portfolio.models.Role;
 import com.portfolio.models.Student;
@@ -69,27 +70,46 @@ public class StudentService {
     }
 
     @Transactional
-    public StudentResponseDTO updateStudent(Long id, StudentDTO studentDTO) {
+    public StudentResponseDTO updateStudent(Long id, StudentUpdateDTO updateDTO) {
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Student not found with id: " + id));
 
-        if (!student.getEmail().equals(studentDTO.getEmail()) &&
-                studentRepository.existsByEmail(studentDTO.getEmail())) {
+        // Проверка email только если он изменился
+        if (updateDTO.getEmail() != null &&
+                !student.getEmail().equals(updateDTO.getEmail()) &&
+                studentRepository.existsByEmail(updateDTO.getEmail())) {
             throw new IllegalArgumentException("Email already exists");
         }
 
-        if (!student.getIdName().equals(studentDTO.getIdName()) &&
-                studentRepository.existsByIdName(studentDTO.getIdName())) {
-            throw new IllegalArgumentException("ID Name already exists");
+        // Обновляем только переданные поля
+        if (updateDTO.getEmail() != null) {
+            student.setEmail(updateDTO.getEmail());
         }
 
-        mapDtoToEntity(studentDTO, student);
+        if (updateDTO.getBio() != null) {
+            student.setBio(updateDTO.getBio());
+        }
 
-        if (studentDTO.getGroupId() != null) {
-            Group group = groupRepository.findById(studentDTO.getGroupId())
+        if (updateDTO.getAvatarUrl() != null) {
+            student.setAvatarUrl(updateDTO.getAvatarUrl());
+        }
+
+        if (updateDTO.getIsActive() != null) {
+            student.setIsActive(updateDTO.getIsActive());
+        }
+
+        // Обновляем пароль только если он передан
+        if (updateDTO.getPassword() != null && !updateDTO.getPassword().isEmpty()) {
+            student.setPasswordHash(passwordEncoder.encode(updateDTO.getPassword()));
+        }
+
+        // Обновляем группу если передан groupId
+        if (updateDTO.getGroupId() != null) {
+            Group group = groupRepository.findById(updateDTO.getGroupId())
                     .orElseThrow(() -> new EntityNotFoundException("Group not found"));
             student.setGroup(group);
-        } else {
+        } else if (updateDTO.getGroupId() != null && updateDTO.getGroupId() == 0) {
+            // Если передано 0, убираем группу
             student.setGroup(null);
         }
 

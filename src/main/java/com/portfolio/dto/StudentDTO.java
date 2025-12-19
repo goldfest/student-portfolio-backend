@@ -4,14 +4,19 @@ import com.portfolio.models.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class StudentDTO {
 
     private Long id;
 
     @NotBlank(message = "ID Name is required")
+    @Size(min = 3, max = 50, message = "ID Name must be between 3 and 50 characters")
     @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "ID Name can only contain letters, numbers and underscores")
     private String idName;
 

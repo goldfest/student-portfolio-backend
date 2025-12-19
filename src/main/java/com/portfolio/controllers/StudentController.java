@@ -2,6 +2,7 @@ package com.portfolio.controllers;
 
 import com.portfolio.dto.StudentDTO;
 import com.portfolio.dto.StudentResponseDTO;
+import com.portfolio.dto.StudentUpdateDTO;
 import com.portfolio.services.StudentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -46,8 +47,8 @@ public class StudentController {
     @PreAuthorize("hasRole('ADMIN') or (hasRole('STUDENT') and #id == authentication.principal.id)")
     public ResponseEntity<StudentResponseDTO> updateStudent(
             @PathVariable Long id,
-            @Valid @RequestBody StudentDTO studentDTO) {
-        return ResponseEntity.ok(studentService.updateStudent(id, studentDTO));
+            @Valid @RequestBody StudentUpdateDTO updateDTO) {
+        return ResponseEntity.ok(studentService.updateStudent(id, updateDTO));
     }
 
     @DeleteMapping("/{id}")

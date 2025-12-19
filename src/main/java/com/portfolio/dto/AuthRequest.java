@@ -2,9 +2,13 @@ package com.portfolio.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
+@AllArgsConstructor
 public class AuthRequest {
 
     @NotBlank(message = "Email is required")

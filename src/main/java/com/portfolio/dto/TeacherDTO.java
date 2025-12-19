@@ -4,9 +4,12 @@ import com.portfolio.models.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
+
 public class TeacherDTO {
 
     private Long id;
